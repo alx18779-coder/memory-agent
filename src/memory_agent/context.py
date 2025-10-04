@@ -16,7 +16,7 @@ class Context:
     """The ID of the user to remember in the conversation."""
 
     model: Annotated[str, {"__template_metadata__": {"kind": "llm"}}] = field(
-        default="anthropic/claude-3-5-sonnet-20240620",
+        default="google_genai/gemini-2.5-flash",
         metadata={
             "description": "The name of the language model to use for the agent. "
             "Should be in the form: provider/model-name."

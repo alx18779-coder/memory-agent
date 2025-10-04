@@ -16,8 +16,7 @@ from memory_agent.state import State
 
 logger = logging.getLogger(__name__)
 
-# Initialize the language model to be used for memory extraction
-llm = init_chat_model()
+# Note: llm will be initialized dynamically in call_model based on runtime context
 
 
 async def call_model(state: State, runtime: Runtime[Context]) -> dict:
@@ -50,9 +49,10 @@ async def call_model(state: State, runtime: Runtime[Context]) -> dict:
     # Invoke the language model with the prepared prompt and tools
     # "bind_tools" gives the LLM the JSON schema for all tools in the list so it knows how
     # to use them.
+    model_config = utils.split_model_and_provider(model)
+    llm = init_chat_model(model_config["model"], model_provider=model_config["provider"])
     msg = await llm.bind_tools([tools.upsert_memory]).ainvoke(
-        [{"role": "system", "content": sys}, *state.messages],
-        context=utils.split_model_and_provider(model),
+        [{"role": "system", "content": sys}, *state.messages]
     )
     return {"messages": [msg]}
 
